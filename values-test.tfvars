@@ -9,11 +9,11 @@ author      = "ductt25"
 ######################################################
 ##                   EC2 Instance                   ##
 ######################################################
-ami                          = "ami-0ccb473bada910e74" //AMI Catalog > Community AMIs > amzn2-ami-hvm-2.0.20230808.0-x86_64-gp2
-instance_type                = "t3a.small"
-iam_instance_profile_role    = "ec2_codebuild"
-user_data                    = "./modules/aws_instance/app_user_data.sh"
-ebs_block_device_volume_size = 50
+ami                          = "ami-08e4b984abde34a4f" //AMI Catalog > Community AMIs > amzn2-ami-hvm-2.0.20230808.0-x86_64-gp2
+instance_type                = "t2.micro"
+iam_instance_profile_role    = "Rancher"
+user_data                    = "./modules/aws_instance/user_data.sh"
+ebs_block_device_volume_size = 20
 
 ######################################################
 ##                    EC2 Key Pair                  ##
