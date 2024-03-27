@@ -1,16 +1,6 @@
 ######################################################
 ##                     Project                      ##
 ######################################################
-variable "project" {
-  type        = string
-  description = "The name of the project being provisioned."
-}
-
-variable "customer" {
-  type        = string
-  description = "The name of the customer for whom the project is being provisioned."
-}
-
 variable "environment" {
   type        = string
   description = "The environment in which the project is being provisioned (e.g., prod, stage, dev, uat, qa)."

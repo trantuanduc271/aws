@@ -3,15 +3,15 @@
 ######################################################
 terraform {
   backend "s3" {
-    bucket         = "__bucket__"
-    key            = "tfstate/__environment__"
-    region         = "__region__"
-    dynamodb_table = "__environment__"
+    bucket         = "s3-terraform-ductt25-test-as1"
+    key            = "tfstate/test"
+    region         = "ap-southeast-1"
+    dynamodb_table = "test"
   }
 }
 
 provider "aws" {
-  region = "__region__"
+  region = "ap-southeast-1"
   default_tags {
     tags = local.tags
   }
