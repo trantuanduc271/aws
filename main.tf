@@ -18,6 +18,32 @@ provider "aws" {
 }
 
 ######################################################
+##                   EC2 Instance                   ##
+######################################################
+module "aws_instance" {
+  source                       = "./modules/aws_instance"
+  iam_instance_profile_name    = local.instance_name
+  iam_instance_profile_role    = var.iam_instance_profile_role
+  instance_name                = local.instance_name
+  instance_type                = var.instance_type
+  key_name                     = var.key_name
+  region                       = var.region
+  subnet_id                    = module.aws_subnet.public_subnet_1_id
+  user_data                    = var.user_data
+  ebs_block_device_volume_size = var.ebs_block_device_volume_size
+  ami                          = var.ami
+}
+
+######################################################
+##                    EC2 Key Pair                  ##
+######################################################
+module "aws_key_pair" {
+  source     = "./modules/aws_key_pair"
+  key_name   = var.key_name
+  public_key = var.public_key
+}
+
+######################################################
 ##                 VPC Routing Table                ##
 ######################################################
 module "aws_route_table" {
