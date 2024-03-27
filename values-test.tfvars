@@ -9,11 +9,11 @@ author      = "ductt25"
 ######################################################
 ##                   EC2 Instance                   ##
 ######################################################
-ami                          = "ami-08e4b984abde34a4f" //AMI Catalog > Community AMIs > amzn2-ami-hvm-2.0.20230808.0-x86_64-gp2
+ami                          = "ami-097c4e1feeea169e5" //AMI Catalog > Community AMIs > amzn2-ami-hvm-2.0.20230808.0-x86_64-gp2
 instance_type                = "t2.micro"
 iam_instance_profile_role    = "Rancher"
 user_data                    = "./modules/aws_instance/user_data.sh"
-ebs_block_device_volume_size = 20
+ebs_block_device_volume_size = 30
 
 ######################################################
 ##                    EC2 Key Pair                  ##
