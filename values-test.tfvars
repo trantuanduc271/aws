@@ -4,7 +4,7 @@
 environment = "test"
 location    = "as1"
 region      = "ap-southeast-1"
-author      = "DucTT25@fpt.com"
+author      = "ductt25"
 
 ######################################################
 ##                        VPC                       ##
