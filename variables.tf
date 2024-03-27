@@ -22,6 +22,18 @@ variable "author" {
 }
 
 ######################################################
+##                    VPC Subnet                    ##
+######################################################
+variable "subnets" {
+  type = map(object({
+    cidr_block = string
+    zone       = string
+    is_public  = bool
+  }))
+  description = "Map of subnets with their properties."
+}
+
+######################################################
 ##                        VPC                       ##
 ######################################################
 variable "cidr_block" {
