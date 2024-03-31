@@ -21,17 +21,18 @@ provider "aws" {
 ##                   EC2 Instance                   ##
 ######################################################
 module "aws_instance" {
-  source                       = "./modules/aws_instance"
-  iam_instance_profile_name    = local.instance_name
-  iam_instance_profile_role    = var.iam_instance_profile_role
-  instance_name                = local.instance_name
-  instance_type                = var.instance_type
-  key_name                     = var.key_name
-  region                       = var.region
-  subnet_id                    = module.aws_subnet.public_subnet_1_id
-  user_data                    = var.user_data
-  ebs_block_device_volume_size = var.ebs_block_device_volume_size
-  ami                          = var.ami
+  source                        = "./modules/aws_instance"
+  iam_instance_profile_name     = local.instance_name
+  iam_instance_profile_role     = var.iam_instance_profile_role
+  instance_name                 = local.instance_name
+  instance_type                 = var.instance_type
+  key_name                      = var.key_name
+  region                        = var.region
+  subnet_id                     = module.aws_subnet.public_subnet_1_id
+  user_data                     = var.user_data
+  ebs_block_device_volume_size  = var.ebs_block_device_volume_size
+  root_block_device_volume_size = var.root_block_device_volume_size
+  ami                           = var.ami
 }
 
 ######################################################

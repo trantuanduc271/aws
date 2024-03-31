@@ -10,6 +10,10 @@ resource "aws_instance" "instance" {
   subnet_id            = var.subnet_id
   user_data            = file(var.user_data)
 
+  root_block_device {
+    volume_size = var.root_block_device_volume_size
+  }
+
   ebs_block_device {
     device_name = var.ebs_block_device_name
     volume_type = var.ebs_block_device_volume_type

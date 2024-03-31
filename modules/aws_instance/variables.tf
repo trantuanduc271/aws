@@ -44,6 +44,11 @@ variable "instance_name" {
   type = string
 }
 
+variable "root_block_device_volume_size" {
+  type        = number
+  description = "(Optional) Size of the volume in gibibytes (GiB)."
+}
+
 variable "ebs_block_device_name" {
   type        = string
   description = "(Required) Name of the device to mount."
