@@ -22,6 +22,29 @@ variable "author" {
 }
 
 ######################################################
+##                   EC2 Instance                   ##
+######################################################
+variable "ami" {
+  type        = string
+  description = "(Optional) AMI to use for the instance. Required unless launch_template is specified and the Launch Template specifes an AMI. If an AMI is specified in the Launch Template, setting ami will override the AMI specified in the Launch Template."
+}
+
+variable "instance_type" {
+  type        = string
+  description = "(Optional) Instance type to use for the instance. Required unless launch_template is specified and the Launch Template specifies an instance type. If an instance type is specified in the Launch Template, setting instance_type will override the instance type specified in the Launch Template. Updates to this field will trigger a stop/start of the EC2 instance."
+}
+
+variable "user_data" {
+  type        = string
+  description = "(Optional) User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate."
+}
+
+variable "ebs_block_device_volume_size" {
+  type        = number
+  description = "(Optional) Size of the volume in gibibytes (GiB)."
+}
+
+######################################################
 ##               IAM Instance Profile               ##
 ######################################################
 variable "iam_instance_profile_role" {
@@ -43,6 +66,35 @@ variable "public_key" {
 }
 
 ######################################################
+##              Default Security Group              ##
+######################################################
+variable "ingress_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = optional(list(string))
+    self        = optional(bool)
+    description = optional(string)
+  }))
+  description = "(Optional) Configuration block. Detailed below."
+  default     = []
+}
+
+variable "egress_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = optional(list(string))
+    self        = optional(bool)
+    description = optional(string)
+  }))
+  description = "(Optional) Configuration block. Detailed below."
+  default     = []
+}
+
+######################################################
 ##                    VPC Subnet                    ##
 ######################################################
 variable "subnets" {
@@ -60,27 +112,4 @@ variable "subnets" {
 variable "cidr_block" {
   type        = string
   description = "(Optional) The IPv4 CIDR block for the VPC. CIDR can be explicitly set or it can be derived from IPAM using ipv4_netmask_length."
-}
-
-######################################################
-##                   EC2 Instance                   ##
-######################################################
-variable "ami" {
-  type        = string
-  description = "(Optional) AMI to use for the instance. Required unless launch_template is specified and the Launch Template specifes an AMI. If an AMI is specified in the Launch Template, setting ami will override the AMI specified in the Launch Template."
-}
-
-variable "instance_type" {
-  type        = string
-  description = "(Optional) Instance type to use for the instance. Required unless launch_template is specified and the Launch Template specifies an instance type. If an instance type is specified in the Launch Template, setting instance_type will override the instance type specified in the Launch Template. Updates to this field will trigger a stop/start of the EC2 instance."
-}
-
-variable "user_data" {
-  type        = string
-  description = "(Optional) User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate."
-}
-
-variable "ebs_block_device_volume_size" {
-  type        = number
-  description = "(Optional) Size of the volume in gibibytes (GiB)."
 }

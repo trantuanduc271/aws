@@ -56,6 +56,17 @@ module "aws_route_table" {
 }
 
 ######################################################
+##              Default Security Group              ##
+######################################################
+module "aws_default_security_group" {
+  source                      = "./modules/aws_default_security_group"
+  default_security_group_name = local.default_security_group_name
+  vpc_id                      = module.aws_vpc.id
+  ingress_rules               = var.ingress_rules
+  egress_rules                = var.egress_rules
+}
+
+######################################################
 ##                    VPC Subnet                    ##
 ######################################################
 module "aws_subnet" {
