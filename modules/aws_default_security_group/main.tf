@@ -1,7 +1,7 @@
 ######################################################
-##                   Security Group                 ##
+##              Default Security Group              ##
 ######################################################
-resource "aws_security_group" "security_group" {
+resource "aws_default_security_group" "default_security_group" {
   vpc_id = var.vpc_id
 
   dynamic "ingress" {
@@ -29,7 +29,7 @@ resource "aws_security_group" "security_group" {
   }
 
   tags = {
-    Name = var.security_group_name
+    Name = var.default_security_group_name
   }
 }
 
