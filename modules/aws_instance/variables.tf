@@ -53,6 +53,7 @@ variable "ebs_block_device_name" {
 variable "ebs_block_device_volume_type" {
   type        = string
   description = "(Optional) Type of volume. Valid values include standard, gp2, gp3, io1, io2, sc1, or st1. Defaults to gp2."
+  default     = "gp2"
 }
 
 variable "ebs_block_device_volume_size" {
