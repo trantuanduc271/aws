@@ -47,13 +47,12 @@ variable "instance_name" {
 variable "ebs_block_device_name" {
   type        = string
   description = "(Required) Name of the device to mount."
-  default     = "/dev/xvda"
+  default     = "/dev/sdh"
 }
 
 variable "ebs_block_device_volume_type" {
   type        = string
   description = "(Optional) Type of volume. Valid values include standard, gp2, gp3, io1, io2, sc1, or st1. Defaults to gp2."
-  default     = "io1"
 }
 
 variable "ebs_block_device_volume_size" {
