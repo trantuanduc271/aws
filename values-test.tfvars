@@ -13,8 +13,8 @@ ami                           = "ami-08e4b984abde34a4f" //AMI Catalog > Communit
 instance_type                 = "t2.medium"
 iam_instance_profile_role     = "Rancher"
 user_data                     = "./modules/aws_instance/user_data.sh"
-root_block_device_volume_size = 30
-ebs_block_device_volume_size  = 30
+root_block_device_volume_size = 20
+ebs_block_device_volume_size  = 20
 
 ######################################################
 ##                    EC2 Key Pair                  ##

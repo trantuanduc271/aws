@@ -93,3 +93,7 @@ module "aws_vpc" {
   nat_gateway_name      = local.nat_gateway_name
   nat_gateway_subnet_id = module.aws_subnet.public_subnet_1_id
 }
+
+module "aws_eks_cluster" {
+  source = "./modules/aws_eks_cluster"
+}
