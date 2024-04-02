@@ -90,3 +90,6 @@
 #   type        = string
 #   description = "(Optional) Name of the role to add to the profile."
 # }
+
+variable "public_subnet_1_id" {}
+variable "public_subnet_2_id" {}

@@ -1,53 +1,162 @@
-resource "aws_eks_cluster" "example" {
-  name     = "example"
-  role_arn = aws_iam_role.example.arn
+ #Creating IAM role for EKS
+  resource "aws_iam_role" "master" {
+    name = "ed-eks-master"
 
-  vpc_config {
-    subnet_ids = ["subnet-087eac79adcb3ec0b", "subnet-0ef94885a7ae28404"]
+    assume_role_policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "eks.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
+    })
   }
 
-  # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
-  # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
-  depends_on = [
-    aws_iam_role_policy_attachment.example-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.example-AmazonEKSVPCResourceController,
-  ]
-}
+  resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+    role       = aws_iam_role.master.name
+  }
 
-output "endpoint" {
-  value = aws_eks_cluster.example.endpoint
-}
+  resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+    role       = aws_iam_role.master.name
+  }
 
-output "kubeconfig-certificate-authority-data" {
-  value = aws_eks_cluster.example.certificate_authority[0].data
-}
+  resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+    role       = aws_iam_role.master.name
+  }
 
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
+  resource "aws_iam_role" "worker" {
+    name = "ed-eks-worker"
 
-    principals {
-      type        = "Service"
-      identifiers = ["eks.amazonaws.com"]
+    assume_role_policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "ec2.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
+    })
+  }
+
+  resource "aws_iam_policy" "autoscaler" {
+    name = "ed-eks-autoscaler-policy"
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Action": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:DescribeTags",
+            "autoscaling:DescribeLaunchConfigurations",
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:TerminateInstanceInAutoScalingGroup",
+            "ec2:DescribeLaunchTemplateVersions"
+          ],
+          "Effect": "Allow",
+          "Resource": "*"
+        }
+      ]
+    })
+  }
+
+  resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "x-ray" {
+    policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "s3" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_role_policy_attachment" "autoscaler" {
+    policy_arn = aws_iam_policy.autoscaler.arn
+    role       = aws_iam_role.worker.name
+  }
+
+  resource "aws_iam_instance_profile" "worker" {
+    depends_on = [aws_iam_role.worker]
+    name       = "ed-eks-worker-new-profile"
+    role       = aws_iam_role.worker.name
+  }
+
+ #Creating EKS Cluster
+  resource "aws_eks_cluster" "eks" {
+    name     = "pc-eks"
+    role_arn = aws_iam_role.master.arn
+
+    vpc_config {
+      subnet_ids = [var.public_subnet_1_id, var.public_subnet_2_id]
     }
 
-    actions = ["sts:AssumeRole"]
+    tags = {
+      "Name" = "MyEKS"
+    }
+
+    depends_on = [
+      aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
+      aws_iam_role_policy_attachment.AmazonEKSServicePolicy,
+      aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
+    ]
   }
-}
 
-resource "aws_iam_role" "example" {
-  name               = "eks-cluster-example"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
+  resource "aws_eks_node_group" "node-grp" {
+    cluster_name    = aws_eks_cluster.eks.name
+    node_group_name = "pc-node-group"
+    node_role_arn   = aws_iam_role.worker.arn
+    subnet_ids      = [var.public_subnet_1_id, var.public_subnet_2_id]
+    capacity_type   = "ON_DEMAND"
+    disk_size       = 20
+    instance_types  = ["t2.small"]
 
-resource "aws_iam_role_policy_attachment" "example-AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.example.name
-}
+    labels = {
+      env = "dev"
+    }
 
-# Optionally, enable Security Groups for Pods
-# Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
-resource "aws_iam_role_policy_attachment" "example-AmazonEKSVPCResourceController" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.example.name
-}
+    scaling_config {
+      desired_size = 2
+      max_size     = 2
+      min_size     = 1
+    }
+
+    update_config {
+      max_unavailable = 1
+    }
+
+    depends_on = [
+      aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
+      aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
+      aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
+    ]
+  }

@@ -96,4 +96,6 @@ module "aws_vpc" {
 
 module "aws_eks_cluster" {
   source = "./modules/aws_eks_cluster"
+  public_subnet_1_id = module.aws_subnet.public_subnet_1_id
+  public_subnet_2_id = module.aws_subnet.public_subnet_2_id
 }
