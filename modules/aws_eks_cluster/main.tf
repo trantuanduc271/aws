@@ -160,3 +160,6 @@
       aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     ]
   }
+
+
+###### Chon verion thap 1.29.0-0
