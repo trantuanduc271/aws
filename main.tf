@@ -99,6 +99,7 @@ module "aws_vpc" {
 ######################################################
 module "aws_eks_cluster" {
   source                         = "./modules/aws_eks_cluster"
+  eks_cluster_name               = local.eks_cluster_name
   public_subnet_1_id             = module.aws_subnet.public_subnet_1_id
   public_subnet_2_id             = module.aws_subnet.public_subnet_2_id
   eks_control_plane_policies_arn = var.eks_control_plane_policies_arn

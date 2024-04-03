@@ -20,6 +20,7 @@ locals {
   nat_gateway_name            = "nat-${local.name_suffix}"
   eip_name                    = "eip-${local.name_suffix}"
   instance_name               = "ec2-${local.name_suffix}"
+  eks_cluster_name            = "eks-${local.name_suffix}"
   default_security_group_name = "sg-${local.name_suffix}"
   public_route_table_name     = "rtb-${replace(local.name_suffix, var.author, "public")}"
   private_route_table_name    = "rtb-${replace(local.name_suffix, var.author, "private")}"
