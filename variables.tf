@@ -38,6 +38,14 @@ variable "eks_data_plane_policies_arn" {
 }
 
 ######################################################
+##                    EKS Cluster                   ##
+######################################################
+variable "eks_cluster_version" {
+  type        = string
+  description = "(Optional) Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS."
+}
+
+######################################################
 ##                   EC2 Instance                   ##
 ######################################################
 variable "ami" {
