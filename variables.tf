@@ -46,6 +46,24 @@ variable "eks_cluster_version" {
 }
 
 ######################################################
+##                  EKS Node Group                  ##
+######################################################
+variable "eks_node_group_desired_size" {
+  type        = number
+  description = "(Required) Desired number of worker nodes."
+}
+
+variable "eks_node_group_max_size" {
+  type        = number
+  description = "(Required) Maximum number of worker nodes."
+}
+
+variable "eks_node_group_min_size" {
+  type        = number
+  description = "(Required) Minimum number of worker nodes."
+}
+
+######################################################
 ##                   EC2 Instance                   ##
 ######################################################
 variable "ami" {

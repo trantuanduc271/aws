@@ -1,3 +1,3 @@
-# output "id" {
-#   value = aws_instance.instance.id
-# }
+output "id" {
+  value = aws_eks_cluster.eks_cluster.id
+}

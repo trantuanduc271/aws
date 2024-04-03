@@ -103,6 +103,18 @@ module "aws_eks_cluster" {
   public_subnet_1_id             = module.aws_subnet.public_subnet_1_id
   public_subnet_2_id             = module.aws_subnet.public_subnet_2_id
   eks_control_plane_policies_arn = var.eks_control_plane_policies_arn
-  eks_data_plane_policies_arn    = var.eks_data_plane_policies_arn
   eks_cluster_version            = var.eks_cluster_version
+}
+
+######################################################
+##                  EKS Node Group                  ##
+######################################################
+module "aws_eks_node_group" {
+  source                      = "./modules/aws_eks_node_group"
+  eks_cluster_name            = module.aws_eks_cluster.id
+  public_subnet_1_id          = module.aws_subnet.public_subnet_1_id
+  public_subnet_2_id          = module.aws_subnet.public_subnet_2_id
+  eks_node_group_desired_size = var.eks_node_group_desired_size
+  eks_node_group_max_size     = var.eks_node_group_max_size
+  eks_node_group_min_size     = var.eks_node_group_min_size
 }
