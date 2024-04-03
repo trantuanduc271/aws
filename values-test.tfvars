@@ -103,6 +103,13 @@ cidr_block = "172.16.0.0/22"
 eks_cluster_version = "1.28"
 
 ######################################################
+##                  EKS Node Group                  ##
+######################################################
+eks_node_group_desired_size = 2
+eks_node_group_max_size     = 2
+eks_node_group_min_size     = 1
+
+######################################################
 ##            EKS Control Plane IAM role            ##
 ######################################################
 eks_control_plane_policies_arn = [
