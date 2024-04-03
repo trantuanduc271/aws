@@ -45,7 +45,7 @@ resource "aws_iam_role" "eks_data_plane" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks_data_plane" {
-  for_each   = toset(var.eks_dâta_plane_policies_arn)
+  for_each   = toset(var.eks_data_plane_policies_arn)
   policy_arn = "arn:aws:iam::aws:policy/${each.value}"
   role       = aws_iam_role.eks_data_plane.name
 }

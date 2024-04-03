@@ -29,7 +29,7 @@ variable "eks_data_plane_iam_role_name" {
   default     = "eks_data_plane"
 }
 
-variable "eks_dâta_plane_policies_arn" {
+variable "eks_data_plane_policies_arn" {
   type        = list(string)
   description = "(Required) - The ARN of the policy you want to apply."
 }
