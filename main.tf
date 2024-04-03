@@ -18,6 +18,43 @@ provider "aws" {
 }
 
 ######################################################
+##              Default Security Group              ##
+######################################################
+module "aws_default_security_group" {
+  source                      = "./modules/aws_default_security_group"
+  default_security_group_name = local.default_security_group_name
+  vpc_id                      = module.aws_vpc.id
+  ingress_rules               = var.ingress_rules
+  egress_rules                = var.egress_rules
+}
+
+######################################################
+##                    EKS Cluster                   ##
+######################################################
+module "aws_eks_cluster" {
+  source                         = "./modules/aws_eks_cluster"
+  eks_cluster_name               = local.eks_cluster_name
+  public_subnet_1_id             = module.aws_subnet.public_subnet_1_id
+  public_subnet_2_id             = module.aws_subnet.public_subnet_2_id
+  eks_control_plane_policies_arn = var.eks_control_plane_policies_arn
+  eks_cluster_version            = var.eks_cluster_version
+}
+
+######################################################
+##                  EKS Node Group                  ##
+######################################################
+module "aws_eks_node_group" {
+  source                      = "./modules/aws_eks_node_group"
+  eks_cluster_name            = module.aws_eks_cluster.id
+  public_subnet_1_id          = module.aws_subnet.public_subnet_1_id
+  public_subnet_2_id          = module.aws_subnet.public_subnet_2_id
+  eks_node_group_desired_size = var.eks_node_group_desired_size
+  eks_node_group_max_size     = var.eks_node_group_max_size
+  eks_node_group_min_size     = var.eks_node_group_min_size
+  eks_data_plane_policies_arn = var.eks_data_plane_policies_arn
+}
+
+######################################################
 ##                   EC2 Instance                   ##
 ######################################################
 module "aws_instance" {
@@ -57,17 +94,6 @@ module "aws_route_table" {
 }
 
 ######################################################
-##              Default Security Group              ##
-######################################################
-module "aws_default_security_group" {
-  source                      = "./modules/aws_default_security_group"
-  default_security_group_name = local.default_security_group_name
-  vpc_id                      = module.aws_vpc.id
-  ingress_rules               = var.ingress_rules
-  egress_rules                = var.egress_rules
-}
-
-######################################################
 ##                    VPC Subnet                    ##
 ######################################################
 module "aws_subnet" {
@@ -92,29 +118,4 @@ module "aws_vpc" {
   eip_name              = local.eip_name
   nat_gateway_name      = local.nat_gateway_name
   nat_gateway_subnet_id = module.aws_subnet.public_subnet_1_id
-}
-
-######################################################
-##                    EKS Cluster                   ##
-######################################################
-module "aws_eks_cluster" {
-  source                         = "./modules/aws_eks_cluster"
-  eks_cluster_name               = local.eks_cluster_name
-  public_subnet_1_id             = module.aws_subnet.public_subnet_1_id
-  public_subnet_2_id             = module.aws_subnet.public_subnet_2_id
-  eks_control_plane_policies_arn = var.eks_control_plane_policies_arn
-  eks_cluster_version            = var.eks_cluster_version
-}
-
-######################################################
-##                  EKS Node Group                  ##
-######################################################
-module "aws_eks_node_group" {
-  source                      = "./modules/aws_eks_node_group"
-  eks_cluster_name            = module.aws_eks_cluster.id
-  public_subnet_1_id          = module.aws_subnet.public_subnet_1_id
-  public_subnet_2_id          = module.aws_subnet.public_subnet_2_id
-  eks_node_group_desired_size = var.eks_node_group_desired_size
-  eks_node_group_max_size     = var.eks_node_group_max_size
-  eks_node_group_min_size     = var.eks_node_group_min_size
 }
