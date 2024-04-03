@@ -105,3 +105,12 @@ eks_control_plane_policies_arn = [
   "AmazonEKSServicePolicy",
   "AmazonEKSVPCResourceController"
 ]
+
+eks_data_plane_policies_arn = [
+  "AmazonEKSWorkerNodePolicy",
+  "AmazonEKS_CNI_Policy",
+  "AmazonSSMManagedInstanceCore",
+  "AmazonEC2ContainerRegistryReadOnly",
+  "AWSXRayDaemonWriteAccess",
+  "AmazonS3ReadOnlyAccess"
+]

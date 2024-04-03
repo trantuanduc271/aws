@@ -30,6 +30,14 @@ variable "eks_control_plane_policies_arn" {
 }
 
 ######################################################
+##              EKS Data Plane IAM role             ##
+######################################################
+variable "eks_dâta_plane_policies_arn" {
+  type        = list(string)
+  description = "(Required) - The ARN of the policy you want to apply."
+}
+
+######################################################
 ##                   EC2 Instance                   ##
 ######################################################
 variable "ami" {

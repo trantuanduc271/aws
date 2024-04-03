@@ -99,4 +99,5 @@ module "aws_eks_cluster" {
   public_subnet_1_id             = module.aws_subnet.public_subnet_1_id
   public_subnet_2_id             = module.aws_subnet.public_subnet_2_id
   eks_control_plane_policies_arn = var.eks_control_plane_policies_arn
+  eks_data_plane_policies_arn    = var.eks_data_plane_policies_arn
 }

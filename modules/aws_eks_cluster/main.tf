@@ -19,27 +19,36 @@ resource "aws_iam_role" "eks_control_plane" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks_control_plane" {
-  for_each   = "arn:aws:iam::aws:policy/${var.eks_control_plane_policies_arn}"
-  policy_arn = each.value
+  for_each   = toset(var.eks_control_plane_policies_arn)
+  policy_arn = "arn:aws:iam::aws:policy/${each.value}"
   role       = aws_iam_role.eks_control_plane.name
 }
 
-# resource "aws_iam_role" "worker" {
-#   name = "ed-eks-worker"
+######################################################
+##              EKS Data Plane IAM role             ##
+######################################################
+resource "aws_iam_role" "eks_data_plane" {
+  name = var.eks_data_plane_iam_role_name
 
-#   assume_role_policy = jsonencode({
-#     "Version" : "2012-10-17",
-#     "Statement" : [
-#       {
-#         "Effect" : "Allow",
-#         "Principal" : {
-#           "Service" : "ec2.amazonaws.com"
-#         },
-#         "Action" : "sts:AssumeRole"
-#       }
-#     ]
-#   })
-# }
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_data_plane" {
+  for_each   = toset(var.eks_dâta_plane_policies_arn)
+  policy_arn = "arn:aws:iam::aws:policy/${each.value}"
+  role       = aws_iam_role.eks_data_plane.name
+}
 
 # resource "aws_iam_policy" "autoscaler" {
 #   name = "ed-eks-autoscaler-policy"
@@ -63,35 +72,7 @@ resource "aws_iam_role_policy_attachment" "eks_control_plane" {
 #   })
 # }
 
-# resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-#   role       = aws_iam_role.worker.name
-# }
 
-# resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-#   role       = aws_iam_role.worker.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-#   role       = aws_iam_role.worker.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#   role       = aws_iam_role.worker.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "x-ray" {
-#   policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
-#   role       = aws_iam_role.worker.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "s3" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-#   role       = aws_iam_role.worker.name
-# }
 
 # resource "aws_iam_role_policy_attachment" "autoscaler" {
 #   policy_arn = aws_iam_policy.autoscaler.arn
