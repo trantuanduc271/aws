@@ -96,3 +96,12 @@ subnets = {
 ##                        VPC                       ##
 ######################################################
 cidr_block = "172.16.0.0/22"
+
+######################################################
+##            EKS Control Plane IAM role            ##
+######################################################
+eks_control_plane_policies_arn = [
+  "AmazonEKSClusterPolicy",
+  "AmazonEKSServicePolicy",
+  "AmazonEKSVPCResourceController"
+]
